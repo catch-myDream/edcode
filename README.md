@@ -16,12 +16,12 @@ Features
 * Support for reading input from files or strings
 * Output can be written to files or printed to console
 
-# installation
+# Installation
 
 ```bash
 pip install edcode
 
-Usage
+# Usage
 ```bash
 edcode [options]
 
