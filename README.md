@@ -23,7 +23,7 @@ pip install edcode
 
 Usage
 ```bash
-python app.py [options]
+edcode [options]
 
 Options
 - `-t`, `--text`: Input string to encode or decode
@@ -45,12 +45,12 @@ Options
 - `-o`, `--output`: Output file name
 
 Examples
-python app.py -t "Hello, World!" --b64e
+edcode -t "Hello, World!" --b64e
 
 Output:
 SGVsbG8sIFdvcmxkIQ==
 
-python app.py -t "SGVsbG8sIFdvcmxkIQ==" --b64d
+edcode -t "SGVsbG8sIFdvcmxkIQ==" --b64d
 
 Output:
 Hello, World!
