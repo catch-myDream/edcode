@@ -18,7 +18,6 @@ Features
 
 # Installation
 
-```bash
 pip install edcode
 
 # Usage
