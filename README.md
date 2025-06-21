@@ -17,8 +17,9 @@ Features
 * Output can be written to files or printed to console
 
 # Installation
-
+```
 pip install edcode
+```
 
 # Usage
 ```bash
