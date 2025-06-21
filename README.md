@@ -16,6 +16,11 @@ Features
 * Support for reading input from files or strings
 * Output can be written to files or printed to console
 
+# installation
+
+```bash
+pip install edcode
+
 Usage
 ```bash
 python app.py [options]
