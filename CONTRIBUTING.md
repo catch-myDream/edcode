@@ -8,7 +8,7 @@ Thank you for your interest in contributing to Edcode! We welcome bug reports, f
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/Mathan-M/edcode.git
+   git clone https://github.com/catch-myDream/edcode.git
    cd edcode
    ```
 

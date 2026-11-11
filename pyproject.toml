@@ -46,10 +46,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Mathan-M/edcode"
-Repository = "https://github.com/Mathan-M/edcode"
-Issues = "https://github.com/Mathan-M/edcode/issues"
-Changelog = "https://github.com/Mathan-M/edcode/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/catch-myDream/edcode"
+Repository = "https://github.com/catch-myDream/edcode"
+Issues = "https://github.com/catch-myDream/edcode/issues"
+Changelog = "https://github.com/catch-myDream/edcode/blob/main/CHANGELOG.md"
 
 [project.scripts]
 edcode = "edcode.edcode:main"

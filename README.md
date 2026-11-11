@@ -1,6 +1,6 @@
 # Edcode
 
-[![CI](https://github.com/Mathan-M/edcode/actions/workflows/ci.yml/badge.svg)](https://github.com/Mathan-M/edcode/actions/workflows/ci.yml)
+[![CI](https://github.com/catch-myDream/edcode/actions/workflows/ci.yml/badge.svg)](https://github.com/catch-myDream/edcode/actions/workflows/ci.yml)
 [![PyPI Version](https://img.shields.io/pypi/v/edcode.svg)](https://pypi.org/project/edcode/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/edcode.svg)](https://pypi.org/project/edcode/)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
@@ -47,7 +47,7 @@ pip install edcode
 ### From Source
 
 ```bash
-git clone https://github.com/Mathan-M/edcode.git
+git clone https://github.com/catch-myDream/edcode.git
 cd edcode
 pip install .
 ```
