@@ -30,6 +30,74 @@ except ImportError:
 
 DEFAULT_CHUNK_SIZE = 256 * 1024  # 256 KB
 
+_Z85_ALPHABET = b"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#"
+_Z85_DECODE_MAP = {c: i for i, c in enumerate(_Z85_ALPHABET)}
+
+_B32_STD = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+_B32_HEX = b"0123456789ABCDEFGHIJKLMNOPQRSTUV"
+_B32_TO_HEX_TRANS = bytes.maketrans(_B32_STD, _B32_HEX)
+_HEX_TO_B32_TRANS = bytes.maketrans(_B32_HEX, _B32_STD)
+
+
+def _py_b32hexencode(data: bytes) -> bytes:
+    """Pure-Python fallback for Base32Hex encode (compatible with Python <3.10)."""
+    if hasattr(base64, 'b32hexencode'):
+        return base64.b32hexencode(data)
+    return base64.b32encode(data).translate(_B32_TO_HEX_TRANS)
+
+
+def _py_b32hexdecode(data: bytes, casefold: bool = False) -> bytes:
+    """Pure-Python fallback for Base32Hex decode (compatible with Python <3.10)."""
+    if hasattr(base64, 'b32hexdecode'):
+        return base64.b32hexdecode(data, casefold=casefold)
+    if casefold:
+        data = data.upper()
+    return base64.b32decode(data.translate(_HEX_TO_B32_TRANS), casefold=False)
+
+
+def _py_z85encode(data: bytes) -> bytes:
+    """Pure-Python fallback for ZeroMQ RFC 32 Z85 encoding."""
+    if len(data) % 4 != 0:
+        raise ValueError("Z85 length must be multiple of 4 bytes")
+    if not data:
+        return b""
+    res = bytearray((len(data) // 4) * 5)
+    j = 0
+    for i in range(0, len(data), 4):
+        val = (data[i] << 24) | (data[i + 1] << 16) | (data[i + 2] << 8) | data[i + 3]
+        res[j] = _Z85_ALPHABET[val // 52200625]
+        res[j + 1] = _Z85_ALPHABET[(val // 614125) % 85]
+        res[j + 2] = _Z85_ALPHABET[(val // 7225) % 85]
+        res[j + 3] = _Z85_ALPHABET[(val // 85) % 85]
+        res[j + 4] = _Z85_ALPHABET[val % 85]
+        j += 5
+    return bytes(res)
+
+
+def _py_z85decode(data: bytes) -> bytes:
+    """Pure-Python fallback for ZeroMQ RFC 32 Z85 decoding."""
+    if len(data) % 5 != 0:
+        raise ValueError("Z85 length must be multiple of 5 characters")
+    if not data:
+        return b""
+    res = bytearray((len(data) // 5) * 4)
+    j = 0
+    for i in range(0, len(data), 5):
+        acc = 0
+        for k in range(5):
+            c = data[i + k]
+            if c not in _Z85_DECODE_MAP:
+                raise ValueError(f"bad z85 character at position {i + k}")
+            acc = acc * 85 + _Z85_DECODE_MAP[c]
+        if acc > 0xFFFFFFFF:
+            raise ValueError(f"z85 overflow in hunk starting at byte {i}")
+        res[j] = (acc >> 24) & 0xFF
+        res[j + 1] = (acc >> 16) & 0xFF
+        res[j + 2] = (acc >> 8) & 0xFF
+        res[j + 3] = acc & 0xFF
+        j += 4
+    return bytes(res)
+
 
 def str_to_bytes(s: Union[str, bytes], encoding: str = 'utf-8', errors: str = 'strict') -> bytes:
     """Convert input string to bytes if not already bytes."""
@@ -105,11 +173,11 @@ def encode_decode(
     elif op == 'b32hxe':
         if HAS_SPEEDUPS:
             return handler_func(_speedups.b32hexencode, source)
-        return handler_func(base64.b32hexencode, source)
+        return handler_func(_py_b32hexencode, source)
     elif op == 'b32hxd':
         if HAS_SPEEDUPS:
             return handler_func(_speedups.b32hexdecode, source, casefold=casefold)
-        return handler_func(base64.b32hexdecode, source, casefold=casefold)
+        return handler_func(_py_b32hexdecode, source, casefold=casefold)
 
     # Base64
     elif op == 'b64e':
@@ -175,11 +243,11 @@ def encode_decode(
             source = source + b'\x00' * (4 - (len(source) % 4))
         if HAS_SPEEDUPS:
             return handler_func(_speedups.z85encode, source)
-        return handler_func(base64.z85encode, source)
+        return handler_func(_py_z85encode, source)
     elif op == 'z85d':
         if HAS_SPEEDUPS:
             return handler_func(_speedups.z85decode, source)
-        return handler_func(base64.z85decode, source)
+        return handler_func(_py_z85decode, source)
 
     # URL encode/decode
     elif op == 'urle':
@@ -308,7 +376,7 @@ def stream_encode_decode(
                     if HAS_SPEEDUPS:
                         out_stream.write(_speedups.b32hexencode(curr))
                     else:
-                        out_stream.write(base64.b32hexencode(curr))
+                        out_stream.write(_py_b32hexencode(curr))
                 elif op == 'b85e':
                     if is_final:
                         if HAS_SPEEDUPS:
@@ -326,7 +394,7 @@ def stream_encode_decode(
                     if HAS_SPEEDUPS:
                         out_stream.write(_speedups.z85encode(curr))
                     else:
-                        out_stream.write(base64.z85encode(curr))
+                        out_stream.write(_py_z85encode(curr))
                 elif op == 'a85e':
                     if HAS_SPEEDUPS:
                         out_stream.write(_speedups.a85encode(curr, pad=pad))

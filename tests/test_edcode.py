@@ -143,6 +143,9 @@ class TestEdcodeCLI(unittest.TestCase):
 
 class TestLargeFileStreaming(unittest.TestCase):
     def test_speedups_status(self):
+        import edcode.edcode as m
+        if getattr(m, '_TESTING_PURE_PYTHON', False):
+            self.skipTest("Testing pure Python fallback")
         from edcode import HAS_SPEEDUPS
         self.assertTrue(HAS_SPEEDUPS, "Expected C speedups module to be loaded")
 
