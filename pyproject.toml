@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edcode"
+version = "1.2.0"
+description = "High-performance CLI tool and library for encoding and decoding data formats with streaming I/O"
+readme = "README.md"
+authors = [{ name = "Mathan" }]
+license = "GPL-3.0-or-later"
+requires-python = ">=3.8"
+dependencies = []
+keywords = [
+    "encode",
+    "decode",
+    "base64",
+    "base32",
+    "base85",
+    "ascii85",
+    "z85",
+    "base16",
+    "hex",
+    "urlencode",
+    "streaming",
+    "cli",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: C",
+    "Topic :: Utilities",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications :: File Sharing",
+]
+
+[project.urls]
+Homepage = "https://github.com/Mathan-M/edcode"
+Repository = "https://github.com/Mathan-M/edcode"
+Issues = "https://github.com/Mathan-M/edcode/issues"
+Changelog = "https://github.com/Mathan-M/edcode/blob/main/CHANGELOG.md"
+
+[project.scripts]
+edcode = "edcode.edcode:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "build",
+    "twine",
+    "wheel",
+]

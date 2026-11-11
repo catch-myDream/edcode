@@ -1,0 +1,20 @@
+# Include top-level documentation and metadata
+include LICENSE
+include README.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include pyproject.toml
+include setup.py
+
+# Include C accelerator source code
+include edcode/_speedups.c
+
+# Include package python source files
+recursive-include edcode *.py
+
+# Include test suite
+recursive-include tests *.py
+
+# Exclude compiled binaries and caches
+global-exclude *.py[cod] __pycache__ *.so *.pyd *.dylib *.dll
+global-exclude .DS_Store
